@@ -19,7 +19,7 @@ class GripPipeline:
         self.hsv_threshold_output = None
 
         self.__blur_input = self.hsv_threshold_output
-        self.__blur_type = BlurType.Median_Filter
+        self.__blur_type = "Median_Filter"
         self.__blur_radius = 52.25225225225225
 
         self.blur_output = None
@@ -90,17 +90,8 @@ class GripPipeline:
         Returns:
             A numpy.ndarray that has been blurred.
         """
-        if(type is BlurType.Box_Blur):
-            ksize = int(2 * round(radius) + 1)
-            return cv2.blur(src, (ksize, ksize))
-        elif(type is BlurType.Gaussian_Blur):
-            ksize = int(6 * round(radius) + 1)
-            return cv2.GaussianBlur(src, (ksize, ksize), round(radius))
-        elif(type is BlurType.Median_Filter):
-            ksize = int(2 * round(radius) + 1)
-            return cv2.medianBlur(src, ksize)
-        else:
-            return cv2.bilateralFilter(src, -1, round(radius), round(radius))
+        ksize = int(2 * round(radius) + 1)
+        return cv2.medianBlur(src, ksize)
 
     @staticmethod
     def __find_contours(input, external_only):
@@ -163,7 +154,3 @@ class GripPipeline:
                 continue
             output.append(contour)
         return output
-
-
-BlurType = Enum('BlurType', 'Box_Blur Gaussian_Blur Median_Filter Bilateral_Filter')
-

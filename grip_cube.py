@@ -19,7 +19,7 @@ class GripPipeline:
         self.hsv_threshold_output = None
 
         self.__blur_input = self.hsv_threshold_output
-        self.__blur_type = "Median_Filter"
+        self.__blur_type = BlurType.Median_Filter
         self.__blur_radius = 52.25225225225225
 
         self.blur_output = None
@@ -34,13 +34,13 @@ class GripPipeline:
         self.__filter_contours_min_perimeter = 0.0
         self.__filter_contours_min_width = 50.0
         self.__filter_contours_max_width = 1000.0
-        self.__filter_contours_min_height = 0
-        self.__filter_contours_max_height = 1000
+        self.__filter_contours_min_height = 0.0
+        self.__filter_contours_max_height = 1000.0
         self.__filter_contours_solidity = [0, 100]
-        self.__filter_contours_max_vertices = 1000000
-        self.__filter_contours_min_vertices = 0
-        self.__filter_contours_min_ratio = 0
-        self.__filter_contours_max_ratio = 1000
+        self.__filter_contours_max_vertices = 1000000.0
+        self.__filter_contours_min_vertices = 0.0
+        self.__filter_contours_min_ratio = 0.0
+        self.__filter_contours_max_ratio = 1000.0
 
         self.filter_contours_output = None
 
@@ -90,8 +90,17 @@ class GripPipeline:
         Returns:
             A numpy.ndarray that has been blurred.
         """
-        ksize = int(2 * round(radius) + 1)
-        return cv2.medianBlur(src, ksize)
+        if(type is BlurType.Box_Blur):
+            ksize = int(2 * round(radius) + 1)
+            return cv2.blur(src, (ksize, ksize))
+        elif(type is BlurType.Gaussian_Blur):
+            ksize = int(6 * round(radius) + 1)
+            return cv2.GaussianBlur(src, (ksize, ksize), round(radius))
+        elif(type is BlurType.Median_Filter):
+            ksize = int(2 * round(radius) + 1)
+            return cv2.medianBlur(src, ksize)
+        else:
+            return cv2.bilateralFilter(src, -1, round(radius), round(radius))
 
     @staticmethod
     def __find_contours(input, external_only):
@@ -154,3 +163,7 @@ class GripPipeline:
                 continue
             output.append(contour)
         return output
+
+
+BlurType = Enum('BlurType', 'Box_Blur Gaussian_Blur Median_Filter Bilateral_Filter')
+

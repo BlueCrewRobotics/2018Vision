@@ -16,10 +16,10 @@ def extra_processing(pipeline):
         heights.append(y)
     
     # Print output
-    print(center_x_positions)
-    print(center_y_positions)
-    print(widths)
-    print(heights)
+    print("center X: ", center_x_positions)
+    print("center Y: ", center_y_positions)
+    print("width: ", widths)
+    print("height: ", heights)
 
 def main():
     print('Creating Video Capture')
